@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: immoform-mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: immoform_db
+      MYSQL_USER: immoform_user
+      MYSQL_PASSWORD: immoform_pass
+    networks:
+      - immoform-net
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+networks:
+  immoform-net:
+    external: true
+
+volumes:
+  mysql_data:
