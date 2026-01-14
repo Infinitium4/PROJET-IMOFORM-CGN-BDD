@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 10 déc. 2025 à 11:20
+-- Généré le : mer. 14 jan. 2026 à 16:09
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -77,7 +77,9 @@ CREATE TABLE `compte` (
 --
 
 INSERT INTO `compte` (`id_utilisateur`, `type_profile`, `mdp`, `adresse_mail`) VALUES
+(1, 'formateurs', '$2y$10$H/74Zv5aYJSocUvrF/8wzeL18QLN3LzeNsfeK8lh35obYNoVaVpC6', 'corentin.joguet@gmail.com'),
 (1, 'contacts', '$2y$10$o1hndjXDr0rvFT18lq3hKu69XuZGDS7916PloKEVsDyQAGr5dvcO.', 'gabin.pageot@gmail.com'),
+(2, 'contacts', '$2y$10$eHSUM7XavcML2ANnwMaYJOQcVNgFt2eW/TjP.Or302qGgCX3XGF1i', 'nils.grosjean@gmail.com'),
 (0, 'contacts', '$2y$10$Gw.cHfC/H/CaasoUuCxu4OUsg3MkBTw50USrxbRNAgQglqkqUl9h.', 'pageot.gab1@gmail.com');
 
 -- --------------------------------------------------------
@@ -116,9 +118,9 @@ CREATE TABLE `demande_conseils` (
   `id_contact` int(11) NOT NULL,
   `type_conseil` varchar(65) NOT NULL,
   `description` text NOT NULL,
-  `date_demande` DATE NOT NULL DEFAULT (CURRENT_DATE),
-  `statut` int(11) NOT NULL,
-  `id_formateur` varchar(65) NOT NULL
+  `date_demande` date NOT NULL DEFAULT current_timestamp(),
+  `statut` varchar(65) NOT NULL,
+  `id_formateur` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -161,6 +163,16 @@ CREATE TABLE `formateurs_assignes` (
   `id_formateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `formateurs_assignes`
+--
+
+INSERT INTO `formateurs_assignes` (`type_formation`, `id_formation`, `id_formateur`) VALUES
+('formations_personnalises', 2, 1),
+('formations_personnalises', 3, 1),
+('formations_personnalises', 4, 1),
+('formations_personnalises', 5, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -171,7 +183,7 @@ CREATE TABLE `formations_en_ligne` (
   `id` int(11) NOT NULL,
   `titre` varchar(65) NOT NULL,
   `description` text NOT NULL,
-  `durée` decimal(10,0) NOT NULL,
+  `duree` decimal(10,0) NOT NULL,
   `niveau` varchar(65) NOT NULL,
   `secteur_concernee` varchar(65) NOT NULL,
   `date_heure` datetime NOT NULL,
@@ -197,7 +209,7 @@ CREATE TABLE `formations_personnalises` (
   `id_demande` int(11) NOT NULL,
   `adresse` varchar(535) NOT NULL,
   `ville` varchar(535) NOT NULL,
-  `code_postale` int(11) NOT NULL
+  `code_postal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -210,7 +222,7 @@ CREATE TABLE `formations_presentiel` (
   `id` int(11) NOT NULL,
   `titre` varchar(65) NOT NULL,
   `description` text NOT NULL,
-  `durée` decimal(10,0) NOT NULL,
+  `duree` decimal(10,0) NOT NULL,
   `niveau` varchar(65) NOT NULL,
   `secteur_concernee` varchar(65) NOT NULL,
   `date_heure_debut` datetime NOT NULL,
@@ -218,7 +230,7 @@ CREATE TABLE `formations_presentiel` (
   `adresse` varchar(535) NOT NULL,
   `ville` varchar(535) NOT NULL,
   `code_postal` varchar(11) NOT NULL,
-  `capacité_acceuil` int(11) NOT NULL,
+  `capacite_acceuil` int(11) NOT NULL,
   `materiel` text DEFAULT NULL,
   `cout_formation` int(11) NOT NULL,
   `modalites_inscription` text DEFAULT NULL,
@@ -315,7 +327,6 @@ ALTER TABLE `formateurs_assignes`
 -- Index pour la table `formations_en_ligne`
 --
 ALTER TABLE `formations_en_ligne`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `id_formateur` (`id_formateur`);
 
 --
@@ -326,16 +337,9 @@ ALTER TABLE `formations_personnalises`
   ADD KEY `id_demande` (`id_demande`);
 
 --
--- Index pour la table `formations_presentiel`
---
-ALTER TABLE `formations_presentiel`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Index pour la table `inscriptions`
 --
 ALTER TABLE `inscriptions`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `id_agence` (`id_agence`),
   ADD KEY `id_contact` (`id_contact`);
 
@@ -351,56 +355,27 @@ ALTER TABLE `travail`
 --
 
 --
--- AUTO_INCREMENT pour la table `agences`
---
-ALTER TABLE `agences`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT pour la table `contacts`
---
-ALTER TABLE `contacts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
 -- AUTO_INCREMENT pour la table `demande_conseils`
 --
 ALTER TABLE `demande_conseils`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `formateurs`
---
-ALTER TABLE `formateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `formations_en_ligne`
---
-ALTER TABLE `formations_en_ligne`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `formations_personnalises`
 --
 ALTER TABLE `formations_personnalises`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `formations_presentiel`
---
-ALTER TABLE `formations_presentiel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `inscriptions`
---
-ALTER TABLE `inscriptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `agences`
+--
+ALTER TABLE `agences`
+  ADD CONSTRAINT `agences_ibfk_1` FOREIGN KEY (`id_contact_facturation`) REFERENCES `contacts` (`id`),
+  ADD CONSTRAINT `agences_ibfk_2` FOREIGN KEY (`id_contact_principal`) REFERENCES `contacts` (`id`);
 
 --
 -- Contraintes pour la table `demande_conseils`
@@ -408,7 +383,7 @@ ALTER TABLE `inscriptions`
 ALTER TABLE `demande_conseils`
   ADD CONSTRAINT `demande_conseils_ibfk_1` FOREIGN KEY (`id_agence`) REFERENCES `agences` (`id`),
   ADD CONSTRAINT `demande_conseils_ibfk_2` FOREIGN KEY (`id_contact`) REFERENCES `contacts` (`id`),
-  ADD CONSTRAINT `demande_conseils_ibfk_3` FOREIGN KEY (`id_formateur`) REFERENCES `formateurs` (`id`);
+  ADD CONSTRAINT `demande_conseils_ibfk_3` FOREIGN KEY (`id_formateur`) REFERENCES `formateurs` (`id`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 --
 -- Contraintes pour la table `formateurs_assignes`
